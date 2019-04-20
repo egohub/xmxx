@@ -1,6 +1,7 @@
 var express = require('express'),
     bodyParser      = require('body-parser'),
-    request = require('sync-request')
+    request = require('sync-request'),
+    cheerio = require('cheerio'),
    app = express();
    app.use(express.static(__dirname + '/public'));
     
@@ -35,7 +36,25 @@ app.get('/posts', function(req, res) {
        res.send(data)
 
 })
+app.get("posts/:link", (req, res) => {
+    var urlss = req.params.link;
+    var get =  request('GET','https://channelmyanmar.org/?p='+urlss).getBody('utf8');
+    var $= cheerio.load(get);
+    var init = $('.elemento a'); 
+        var data = [];
+        
+  init.each(function(){
+  var urls = $(this).attr('href');
+    var links = {link:$(this).attr('href')}
+    var res = request('GET', 'https://killer.suchcrypto.co/kill?'+urls);
+    console.log(urls)
+     data.push(res.getBody('utf8'))
+     // data.push(links)
+         // res.send(links)
 
+  })
+    res.send(data)
+})
 app.set('port', process.env.PORT || 3000);
 var server = app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + server.address().port);
