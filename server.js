@@ -21,11 +21,14 @@ app.get('/posts', function(req, res) {
     json.forEach(function(ele) {
     //https://channelmyanmar.org/wp-json/wp/v2/media?parent=
     var img = request('GET', 'https://channelmyanmar.org/wp-json/wp/v2/media?parent='+ele.id).getBody('utf8');
+    var  pic = JSON.parse(img) ;
+
       data.push({
         id : ele.id,
         title : ele.title.rendered,
         content: ele.excerpt.rendered,
-        selfLink : 'https://xmxx.herokuapp.com/'+ele.id
+        image:pic[0], 
+        selfLink : 'https://xmxx.herokuapp.com/posts/'+ele.id
       })
       console.log(img);
     });
