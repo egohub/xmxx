@@ -14,7 +14,24 @@ var express = require('express'),
 //app.get('/posts', api.posts);
 //app.get('/posts/:id', api.post);
 
+app.get('/posts', function(req, res) {
+    var data = [];
+    var req = request('GET', 'https://channelmyanmar.org/wp-json/wp/v2/posts').getBody('utf8');
+    var json = JSON.parse(req)
+    json.forEach(function(ele) {
+    //https://channelmyanmar.org/wp-json/wp/v2/media?parent=
+    var img = request('GET', 'https://channelmyanmar.org/wp-json/wp/v2/media?parent='+ele.id).getBody('utf8');
+      data.push({
+        id : ele.id,
+        title : ele.title.rendered,
+        content: ele.excerpt.rendered,
+        selfLink : 'https://xmxx.herokuapp.com/'+ele.id
+      })
+      console.log(img);
+    });
+       res.send(data)
 
+})
 
 app.set('port', process.env.PORT || 3000);
 var server = app.listen(app.get('port'), function() {
