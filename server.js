@@ -36,7 +36,7 @@ app.get('/posts', function(req, res) {
        res.send(data)
 
 })
-app.get("posts/:link", (req, res) => {
+app.get('/posts/:link', (req, res) => {
     var urlss = req.params.link;
     var get =  request('GET','https://channelmyanmar.org/?p='+urlss).getBody('utf8');
     var $= cheerio.load(get);
