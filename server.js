@@ -4,7 +4,7 @@ var express = require('express'),
     cheerio = require('cheerio'),
     mongoose = require("mongoose"),
    app = express();
-   app.use(express.static(__dirname + '/public'));
+   app.use(express.static(__dirname + '/www'));
     
    app.all('*', function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
