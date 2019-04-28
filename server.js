@@ -73,6 +73,48 @@ app.get('/posts/:link', (req, res) => {
       res.send(result)
     })
 })
+
+app.get('/post/:link', (req, res) => {
+    var urlss = req.params.link;
+
+    var get =  request('GET','https://channelmyanmar.org/?p='+urlss).getBody('utf8');
+    var $= cheerio.load(get);
+    var init = $('.elemento a');
+    var link = [], downloadLink=[];
+    var post = {};
+          post.postId = urlss;
+          post.postTitle= $('title').text();
+          post.postImage= $('.fix img').attr('src')
+          post.imdb = $('.imdb_r a .a').text()
+
+    init.each(function(){
+      var urls = $(this).prop('href');
+          host = $(this).find('.b').text(),
+          size = $(this).find('.c').text(),
+          quality = $(this).find('.d').text();
+
+      if (urls.length > 3) {
+          var res = request('GET', Killer+urls).getBody('utf8');
+          link.push(res);
+          var n = res.includes("openload");
+          if(n){
+            post.watch = {url:res}
+          }
+          console.log(n);
+          downloadLink.push({
+            dllink:res,
+            host: host,
+            size : size,
+            quality: quality
+          });
+          post.downloadLink = downloadLink;
+          // post.link = link;
+      }
+    })
+     res.send(post);
+
+  })
+
 app.set('port', process.env.PORT || 3000);
 var server = app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + server.address().port);
