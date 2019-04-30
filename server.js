@@ -83,32 +83,31 @@ app.get('/post/:link', (req, res) => {
     var link = [], downloadLink=[];
     var post = {};
           post.postId = urlss;
-          post.postTitle= $('title').text();
+          post.postTitle= $('.data h1').text()//$('title').text();
           post.postImage= $('.fix img').attr('src')
-          post.imdb = $('.imdb_r a .a').text()
+          post.rating = $('.imdb_r a .a').text().trim()
+           re = /tinylink\.run/gi
 
     init.each(function(){
       var urls = $(this).prop('href');
-          host = $(this).find('.b').text(),
+          host = $(this).find('.b').text().trim(),
           size = $(this).find('.c').text(),
-          quality = $(this).find('.d').text();
+          quality = $(this).find('.d').text(),
+          split = urls.split('/')[2],
+          re = split.match(re);
 
-      if (urls.length > 3) {
-          var res = request('GET', Killer+urls).getBody('utf8');
+      if (re) {
+          var res = request('GET', 'https://killer.suchcrypto.co/kill?'+urls).getBody('utf8');
           link.push(res);
           var n = res.includes("openload");
-          if(n){
-            post.watch = {url:res}
-          }
-          console.log(n);
+
           downloadLink.push({
-            dllink:res,
+            url:res,
             host: host,
             size : size,
             quality: quality
           });
-          post.downloadLink = downloadLink;
-          // post.link = link;
+          post.info = downloadLink;
       }
     })
      res.send(post);
